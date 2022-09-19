@@ -1,1 +1,9 @@
 .idea
+
+# dependencies
+front/node_modules
+front/.pnp
+front/.pnp.js
+
+# production
+front/build
