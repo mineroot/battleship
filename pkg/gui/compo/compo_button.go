@@ -6,6 +6,7 @@ import (
 	"github.com/faiface/pixel"
 	"github.com/faiface/pixel/pixelgl"
 	"golang.org/x/image/colornames"
+	"image/color"
 )
 
 type Button struct {
@@ -15,9 +16,24 @@ type Button struct {
 	isPressed       bool
 }
 
-func NewButton(pos pixel.Vec, caption string) *Button {
+func NewBlueButton(pos pixel.Vec, caption string) *Button {
 	canvasDefault := sprites.CreateCanvas(sprites.ButtonBlueDefault)
 	canvasMouseDown := sprites.CreateCanvas(sprites.ButtonBlueMouseDown)
+	return newButton(canvasDefault, canvasMouseDown, colornames.Yellow, colornames.Gold, pos, caption)
+}
+
+func NewYellowButton(pos pixel.Vec, caption string) *Button {
+	canvasDefault := sprites.CreateCanvas(sprites.ButtonYellowDefault)
+	canvasMouseDown := sprites.CreateCanvas(sprites.ButtonYellowMouseDown)
+	return newButton(canvasDefault, canvasMouseDown, colornames.Blue, colornames.Blueviolet, pos, caption)
+}
+
+func newButton(
+	canvasDefault, canvasMouseDown *pixelgl.Canvas,
+	colorDefault, colorMouseDown color.Color,
+	pos pixel.Vec,
+	caption string,
+) *Button {
 	btn := &Button{
 		base:            newBase(canvasDefault),
 		canvasDefault:   canvasDefault,
@@ -28,8 +44,8 @@ func NewButton(pos pixel.Vec, caption string) *Button {
 	btn.On(MouseLDown, btn.mouseDownButton)
 	btn.On(MouseLeave, btn.releaseButton)
 	btn.On(MouseLUp, btn.releaseButton)
-	typing.TypeOnCanvas(btn.canvasDefault, caption, typing.Center, pixel.V(0, 20), typing.Size39, colornames.Yellow)
-	typing.TypeOnCanvas(btn.canvasMouseDown, caption, typing.Center, pixel.V(0, 15), typing.Size39, colornames.Gold)
+	typing.TypeOnCanvas(btn.canvasDefault, caption, typing.Center, pixel.V(0, 20), typing.Size39, colorDefault)
+	typing.TypeOnCanvas(btn.canvasMouseDown, caption, typing.Center, pixel.V(0, 15), typing.Size39, colorMouseDown)
 	return btn
 }
 

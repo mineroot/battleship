@@ -3,6 +3,8 @@ package scene
 import (
 	"battleship/pkg/game"
 	"battleship/pkg/gui/compo"
+	"battleship/pkg/p2p"
+	"fmt"
 	"github.com/faiface/pixel"
 	"github.com/faiface/pixel/pixelgl"
 )
@@ -13,11 +15,22 @@ type SetupScene struct {
 }
 
 func NewSetupScene(bounds pixel.Rect, player game.Player) *SetupScene {
+	if player == game.PlayerOne {
+		go p2p.CreateServer()
+	} else {
+		go p2p.CreateClient("127.0.0.1:49152") //TODO hardcode!
+	}
+
 	newGame := game.NewGame()
 	_ = newGame
+	btnReady := compo.NewYellowButton(pixel.V(300, 100), "READY")
+	btnReady.On(compo.Click, func(data ...any) {
+		fmt.Println("ready")
+	})
 	components := []compo.Compo{
 		compo.NewBg(bounds),
 		compo.NewField(),
+		btnReady,
 	}
 	return &SetupScene{
 		components: components,

@@ -22,9 +22,9 @@ func NewStartScene(bounds pixel.Rect) *StartScene {
 		bounds: bounds,
 	}
 	midX := bounds.W() / 2
-	btnCreate := compo.NewButton(pixel.V(midX, 400), "CREATE")
-	btnConnect := compo.NewButton(pixel.V(midX, 300), "CONNECT")
-	btnExit := compo.NewButton(pixel.V(midX, 200), "EXIT")
+	btnCreate := compo.NewBlueButton(pixel.V(midX, 400), "CREATE")
+	btnConnect := compo.NewBlueButton(pixel.V(midX, 300), "CONNECT")
+	btnExit := compo.NewBlueButton(pixel.V(midX, 200), "EXIT")
 
 	btnCreate.On(compo.Click, func(...any) {
 		scene.gotoSetup = true
