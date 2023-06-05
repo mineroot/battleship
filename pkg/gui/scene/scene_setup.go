@@ -2,11 +2,14 @@ package scene
 
 import (
 	"battleship/pkg/game"
+	f "battleship/pkg/game/field"
 	"battleship/pkg/gui/compo"
+	"battleship/pkg/gui/typing"
 	"battleship/pkg/p2p"
-	"fmt"
+	"errors"
 	"github.com/faiface/pixel"
 	"github.com/faiface/pixel/pixelgl"
+	"golang.org/x/image/colornames"
 )
 
 type SetupScene struct {
@@ -25,16 +28,28 @@ func NewSetupScene(bounds pixel.Rect, player game.Player) *SetupScene {
 	_ = newGame
 
 	field := compo.NewField()
-	btnReady := compo.NewYellowButton(pixel.V(300, 100), "READY")
+	statusLbl := compo.NewLabel(pixel.V(300, 100), "", typing.Left, typing.Size39, colornames.Darkorange)
+	btnReady := compo.NewYellowButton(pixel.V(1050, 100), "READY")
 	btnReady.On(compo.Click, func(data ...any) {
 		err := field.Validate()
-		// TODO: display err
-		fmt.Println(err)
+		switch {
+		case err == nil:
+			statusLbl.SetCaption("Waiting for another player")
+		case errors.Is(err, f.ErrVariantCount):
+			statusLbl.SetCaption("Not all ships on field")
+		case errors.Is(err, f.ErrShipOutOfField):
+			statusLbl.SetCaption("Ship out of field")
+		case errors.Is(err, f.ErrShipsOverlap):
+			statusLbl.SetCaption("Ships overlap")
+		default:
+			statusLbl.SetCaption("Something wrong")
+		}
 	})
 	components := []compo.Compo{
 		compo.NewBg(bounds),
 		field,
 		btnReady,
+		statusLbl,
 	}
 	return &SetupScene{
 		components: components,

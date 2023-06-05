@@ -40,8 +40,8 @@ func NewStartScene(bounds pixel.Rect) *StartScene {
 
 	scene.components = []compo.Compo{
 		compo.NewBg(bounds),
-		compo.NewLabel(pixel.V(midX, 550), "BattleShip 2023", typing.Size78, colornames.Lightblue),
-		compo.NewLabel(pixel.V(midX-3, 550+3), "BattleShip 2023", typing.Size78, colornames.Deepskyblue), // shadow effect
+		compo.NewLabel(pixel.V(midX, 550), "BattleShip 2023", typing.Center, typing.Size78, colornames.Lightblue),
+		compo.NewLabel(pixel.V(midX-3, 550+3), "BattleShip 2023", typing.Center, typing.Size78, colornames.Deepskyblue), // shadow effect
 		btnCreate,
 		btnConnect,
 		btnExit,
