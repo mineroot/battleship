@@ -1,6 +1,9 @@
 package compo
 
 import (
+	"battleship/pkg/game/field"
+	"battleship/pkg/game/position"
+	"battleship/pkg/game/ship"
 	"github.com/faiface/pixel"
 	"github.com/faiface/pixel/imdraw"
 	"github.com/faiface/pixel/pixelgl"
@@ -32,10 +35,38 @@ func NewField() *Field {
 	return f
 }
 
+func (f *Field) Validate() error {
+	const fieldMarginX, fieldMarginY float64 = 50, 150
+	ships := ship.Ships{}
+	for _, s := range f.ships {
+		if f.Rect().Contains(s.Pos) {
+			var shipLenX, shipLenY float64
+			if s.Orientation == Horizontal {
+				shipLenX = cellSize * float64(s.decks)
+				shipLenY = cellSize
+			} else {
+				shipLenX = cellSize
+				shipLenY = cellSize * float64(s.decks)
+			}
+			x := (s.Pos.X - fieldMarginX - (shipLenX / 2)) / cellSize
+			y := (s.Pos.Y - fieldMarginY - (shipLenY / 2)) / cellSize
+			// flip 'y' to be (0,0) top left corner, instead of (0,0) bottom left corner
+			y = field.Size - y - (shipLenY / cellSize)
+
+			ships = append(
+				ships,
+				ship.New(position.New(int(x), int(y)), ship.Variant(s.decks-1), ship.Orientation(s.Orientation)),
+			)
+		}
+	}
+	_, err := field.NewField(ships)
+	return err
+}
+
 func (f *Field) Update(win *pixelgl.Window, dt float64) {
-	for _, ship := range f.ships {
-		ship.Update(win, dt)
-		if ship.isMouseDown {
+	for _, s := range f.ships {
+		s.Update(win, dt)
+		if s.isMouseDown {
 			break // prevent dragging multiple ships
 		}
 	}
@@ -43,8 +74,8 @@ func (f *Field) Update(win *pixelgl.Window, dt float64) {
 
 func (f *Field) Draw(target pixel.ComposeTarget, dt float64) {
 	f.base.Draw(target, dt)
-	for _, ship := range f.ships {
-		ship.Draw(target, dt)
+	for _, s := range f.ships {
+		s.Draw(target, dt)
 	}
 }
 

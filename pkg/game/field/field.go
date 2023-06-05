@@ -7,7 +7,7 @@ import (
 	"fmt"
 )
 
-const size = 10
+const Size = 10
 
 var (
 	ErrVariantCount   = errors.New("wrong variant count")
@@ -19,12 +19,12 @@ var (
 
 type Field struct {
 	ships ship.Ships
-	shots [size][size]bool
+	shots [Size][Size]bool
 }
 
 func NewField(ships ship.Ships) (*Field, error) {
 	wrap := func(err error) error {
-		return fmt.Errorf("unable to create new field: %w", err)
+		return fmt.Errorf("field: unable to create field: %w", err)
 	}
 	err := validateVariantsCount(ships)
 	if err != nil {
@@ -40,7 +40,7 @@ func NewField(ships ship.Ships) (*Field, error) {
 }
 
 func (f *Field) Shoot(pos position.Pos) (bool, error) {
-	if !pos.InField(size, size) {
+	if !pos.InField(Size, Size) {
 		return false, fmt.Errorf("%w: %s", ErrPosOutOfField, pos)
 	}
 	if f.shots[pos.X][pos.Y] {
@@ -66,7 +66,7 @@ func (f *Field) trySink(s *ship.Ship) {
 	}
 	s.Sink()
 	for _, p := range s.Neighborhoods() {
-		if p.InField(size, size) {
+		if p.InField(Size, Size) {
 			f.shots[p.X][p.Y] = true
 		}
 	}
@@ -95,7 +95,7 @@ func validatePositions(ships ship.Ships) error {
 	// check ships for out of field, overlap and intersection with neighborhoods
 	for i := 0; i < ships.Count(); i++ {
 		shipIHeadAndTails := ships[i].HeadAndTails()
-		if !shipIHeadAndTails.InField(size, size) {
+		if !shipIHeadAndTails.InField(Size, Size) {
 			return ErrShipOutOfField
 		}
 		for j := i + 1; j < len(ships); j++ {

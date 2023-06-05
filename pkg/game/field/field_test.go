@@ -126,7 +126,7 @@ func TestField_Shoot(t *testing.T) {
 		isShot, err := f.Shoot(outOfFieldPos)
 		assert.False(t, isShot)
 		assert.ErrorIs(t, err, ErrPosOutOfField)
-		outOfFieldPos = position.New(size, 0)
+		outOfFieldPos = position.New(Size, 0)
 		isShot, err = f.Shoot(outOfFieldPos)
 		assert.False(t, isShot)
 		assert.ErrorIs(t, err, ErrPosOutOfField)

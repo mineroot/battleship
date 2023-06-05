@@ -23,13 +23,17 @@ func NewSetupScene(bounds pixel.Rect, player game.Player) *SetupScene {
 
 	newGame := game.NewGame()
 	_ = newGame
+
+	field := compo.NewField()
 	btnReady := compo.NewYellowButton(pixel.V(300, 100), "READY")
 	btnReady.On(compo.Click, func(data ...any) {
-		fmt.Println("ready")
+		err := field.Validate()
+		// TODO: display err
+		fmt.Println(err)
 	})
 	components := []compo.Compo{
 		compo.NewBg(bounds),
-		compo.NewField(),
+		field,
 		btnReady,
 	}
 	return &SetupScene{
