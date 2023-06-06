@@ -10,11 +10,11 @@ import (
 )
 
 type StartScene struct {
-	components []compo.Compo
-	bounds     pixel.Rect
-	player     game.Player
-	gotoSetup  bool
-	exit       bool
+	base
+	bounds    pixel.Rect
+	player    game.Player
+	gotoSetup bool
+	exit      bool
 }
 
 func NewStartScene(bounds pixel.Rect) *StartScene {
@@ -61,10 +61,4 @@ func (s *StartScene) Update(win *pixelgl.Window, dt float64) Scene {
 		return NewSetupScene(s.bounds, s.player)
 	}
 	return nil
-}
-
-func (s *StartScene) Draw(win *pixelgl.Window, dt float64) {
-	for _, component := range s.components {
-		component.Draw(win, dt)
-	}
 }

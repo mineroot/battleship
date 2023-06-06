@@ -17,14 +17,14 @@ type Button struct {
 }
 
 func NewBlueButton(pos pixel.Vec, caption string) *Button {
-	canvasDefault := sprites.CreateCanvas(sprites.ButtonBlueDefault)
-	canvasMouseDown := sprites.CreateCanvas(sprites.ButtonBlueMouseDown)
+	canvasDefault := sprites.CreateCanvas(sprites.ButtonBlueDefault, nil)
+	canvasMouseDown := sprites.CreateCanvas(sprites.ButtonBlueMouseDown, nil)
 	return newButton(canvasDefault, canvasMouseDown, colornames.Yellow, colornames.Gold, pos, caption)
 }
 
 func NewYellowButton(pos pixel.Vec, caption string) *Button {
-	canvasDefault := sprites.CreateCanvas(sprites.ButtonYellowDefault)
-	canvasMouseDown := sprites.CreateCanvas(sprites.ButtonYellowMouseDown)
+	canvasDefault := sprites.CreateCanvas(sprites.ButtonYellowDefault, nil)
+	canvasMouseDown := sprites.CreateCanvas(sprites.ButtonYellowMouseDown, nil)
 	return newButton(canvasDefault, canvasMouseDown, colornames.Blue, colornames.Blueviolet, pos, caption)
 }
 

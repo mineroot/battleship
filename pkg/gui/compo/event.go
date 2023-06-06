@@ -13,4 +13,6 @@ const (
 	DragStart  Event = "drag_start"
 	Dragging   Event = "dragging"
 	DragEnd    Event = "drag_end"
+	FocusIn    Event = "focus_in"
+	FocusOut   Event = "focus_our"
 )

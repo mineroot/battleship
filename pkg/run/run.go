@@ -15,6 +15,7 @@ type runner struct {
 func (r *runner) run(win *pixelgl.Window, dt float64) {
 	newScene := r.currentScene.Update(win, dt)
 	if newScene != nil {
+		_ = r.currentScene.Dispose()
 		r.currentScene = newScene
 		return
 	}

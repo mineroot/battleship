@@ -17,6 +17,7 @@ const (
 type Compo interface {
 	Update(win *pixelgl.Window, dt float64)
 	Draw(target pixel.ComposeTarget, dt float64)
+	On(event Event, handler Handler)
 }
 
 type base struct {
@@ -29,6 +30,7 @@ type base struct {
 	isMouseEnter          bool
 	isMouseDown           bool
 	mouseLJustPressedTime time.Time
+	isFocus               bool
 }
 
 func newBase(canvas *pixelgl.Canvas) base {
@@ -40,6 +42,11 @@ func newBase(canvas *pixelgl.Canvas) base {
 
 func (b *base) Update(win *pixelgl.Window, _ float64) {
 	mousePos := win.MousePosition()
+	clickOutOfCompo := win.JustPressed(pixelgl.MouseButtonLeft) && !b.Rect().Contains(mousePos)
+	if (!win.Focused() || clickOutOfCompo) && b.isFocus {
+		b.isFocus = false
+		b.triggerEvent(FocusOut)
+	}
 	if win.JustReleased(pixelgl.MouseButtonLeft) && b.isMouseEnter {
 		b.triggerEvent(MouseLUp, mousePos)
 	}
@@ -48,7 +55,12 @@ func (b *base) Update(win *pixelgl.Window, _ float64) {
 		b.triggerEvent(DragEnd, mousePos)
 		if b.isMouseEnter {
 			clickDuration := time.Since(b.mouseLJustPressedTime)
-			b.triggerEvent(Click, mousePos, clickDuration)
+			relativeMousePos := pixel.V(mousePos.X-b.Pos.X+(b.Size.X/2), mousePos.Y-b.Pos.Y+(b.Size.Y/2))
+			b.triggerEvent(Click, mousePos, relativeMousePos, clickDuration)
+			if !b.isFocus {
+				b.isFocus = true
+				b.triggerEvent(FocusIn)
+			}
 		}
 	}
 	if !win.MouseInsideWindow() {

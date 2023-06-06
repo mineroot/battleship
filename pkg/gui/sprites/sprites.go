@@ -6,6 +6,7 @@ import (
 	"github.com/faiface/pixel"
 	"github.com/faiface/pixel/pixelgl"
 	"image"
+	"image/color"
 	_ "image/png"
 )
 
@@ -18,6 +19,7 @@ const (
 	ButtonYellowMouseDown
 	ButtonBlueDefault
 	ButtonBlueMouseDown
+	Input
 )
 
 const (
@@ -46,6 +48,9 @@ var (
 		ButtonBlueMouseDown: {
 			[]tileCoordinates{{27, 32}, {28, 32}, {28, 32}, {29, 32}},
 		},
+		Input: {
+			[]tileCoordinates{{27, 23}, {28, 23}, {28, 23}, {28, 23}, {28, 23}, {28, 23}, {28, 23}, {29, 23}},
+		},
 	}
 )
 
@@ -55,12 +60,13 @@ func Init(assetsDir embed.FS) {
 	isInit = true
 }
 
-func CreateCanvas(canvasType CanvasType) *pixelgl.Canvas {
+func CreateCanvas(canvasType CanvasType, colorMask color.Color) *pixelgl.Canvas {
 	checkInit()
 	canvasTiles := canvasesTiles[canvasType]
 	tilesHeight := len(canvasTiles)
 	tilesWidth := len(canvasTiles[0])
 	canvas := pixelgl.NewCanvas(pixel.R(0, 0, float64(tileScaled*tilesWidth), float64(tileScaled*tilesHeight)))
+	canvas.SetColorMask(colorMask)
 	for i, canvasColumnTiles := range canvasTiles {
 		for j, tile := range canvasColumnTiles {
 			reflectI := len(canvasTiles) - 1 - i // (0,0) top-left (as in layout) to bottom-left (as in game engine)

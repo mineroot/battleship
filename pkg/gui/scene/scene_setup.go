@@ -13,22 +13,29 @@ import (
 )
 
 type SetupScene struct {
-	components []compo.Compo
-	bounds     pixel.Rect
+	base
+	bounds pixel.Rect
 }
 
 func NewSetupScene(bounds pixel.Rect, player game.Player) *SetupScene {
+	scene := &SetupScene{}
+	var inputOrLabel compo.Compo
 	if player == game.PlayerOne {
 		go p2p.CreateServer()
+		label := compo.NewLabel(pixel.V(300, 100), "Copy your address 127.0.0.1:49152", typing.Left, typing.Size26, colornames.Blue)
+		inputOrLabel = label
 	} else {
 		go p2p.CreateClient("127.0.0.1:49152") //TODO hardcode!
+		input := compo.NewInput(pixel.V(300, 100), "Enter IP address")
+		input.RegexpPattern = `^[\d\.:]{1,21}$`
+		inputOrLabel = input
 	}
 
 	newGame := game.NewGame()
 	_ = newGame
 
 	field := compo.NewField()
-	statusLbl := compo.NewLabel(pixel.V(300, 100), "", typing.Left, typing.Size39, colornames.Darkorange)
+	statusLbl := compo.NewLabel(pixel.V(300, 50), "", typing.Left, typing.Size39, colornames.Darkorange)
 	btnReady := compo.NewYellowButton(pixel.V(1050, 100), "READY")
 	btnReady.On(compo.Click, func(data ...any) {
 		err := field.Validate()
@@ -45,15 +52,14 @@ func NewSetupScene(bounds pixel.Rect, player game.Player) *SetupScene {
 			statusLbl.SetCaption("Something wrong")
 		}
 	})
-	components := []compo.Compo{
+	scene.components = []compo.Compo{
 		compo.NewBg(bounds),
 		field,
 		btnReady,
 		statusLbl,
+		inputOrLabel,
 	}
-	return &SetupScene{
-		components: components,
-	}
+	return scene
 }
 
 func (s *SetupScene) Update(win *pixelgl.Window, dt float64) Scene {
@@ -61,10 +67,4 @@ func (s *SetupScene) Update(win *pixelgl.Window, dt float64) Scene {
 		component.Update(win, dt)
 	}
 	return nil
-}
-
-func (s *SetupScene) Draw(win *pixelgl.Window, dt float64) {
-	for _, component := range s.components {
-		component.Draw(win, dt)
-	}
 }

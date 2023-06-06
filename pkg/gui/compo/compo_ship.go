@@ -45,7 +45,7 @@ func NewShip(decks int, originPos pixel.Vec) *Ship {
 		s.roundPos()
 	})
 	s.On(Click, func(data ...any) {
-		clickDuration := data[1].(time.Duration)
+		clickDuration := data[2].(time.Duration)
 		if clickDuration < time.Millisecond*150 {
 			s.switchOrientation()
 			s.alignAfterOrientationSwitch()
