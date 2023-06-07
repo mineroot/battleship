@@ -38,13 +38,13 @@ func (l *Label) Update(*pixelgl.Window, float64) {
 }
 
 func (l *Label) typeOnCanvas() {
-	bounds := typing.BoundsOf(l.caption, pixel.ZV, l.size)
+	bounds := typing.BoundsOf(l.caption, pixel.V(0, 5), l.size)
 	// canvas with zero bounds will panic
 	if bounds == pixel.ZR {
 		bounds = pixel.R(0, 0, 1, 1)
 	}
 	canvas := pixelgl.NewCanvas(bounds)
 	l.Canvas = canvas
-	typing.TypeOnCanvas(l.Canvas, l.caption, l.align, pixel.ZV, l.size, l.color)
+	typing.TypeOnCanvas(l.Canvas, l.caption, l.align, pixel.V(0, 5), l.size, l.color)
 	l.Size = l.Canvas.Bounds().Size()
 }

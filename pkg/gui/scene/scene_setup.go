@@ -19,18 +19,6 @@ type SetupScene struct {
 
 func NewSetupScene(bounds pixel.Rect, player game.Player) *SetupScene {
 	scene := &SetupScene{}
-	var inputOrLabel compo.Compo
-	if player == game.PlayerOne {
-		go p2p.CreateServer()
-		label := compo.NewLabel(pixel.V(300, 100), "Copy your address 127.0.0.1:49152", typing.Left, typing.Size26, colornames.Blue)
-		inputOrLabel = label
-	} else {
-		go p2p.CreateClient("127.0.0.1:49152") //TODO hardcode!
-		input := compo.NewInput(pixel.V(300, 100), "Enter IP address")
-		input.RegexpPattern = `^[\d\.:]{1,21}$`
-		inputOrLabel = input
-	}
-
 	newGame := game.NewGame()
 	_ = newGame
 
@@ -57,7 +45,23 @@ func NewSetupScene(bounds pixel.Rect, player game.Player) *SetupScene {
 		field,
 		btnReady,
 		statusLbl,
-		inputOrLabel,
+	}
+	if player == game.PlayerOne {
+		go p2p.CreateServer()
+		clickToCopyLblShadow := compo.NewLabel(pixel.V(300+1, 125-1), "Click to copy your address,", typing.Left, typing.Size39, colornames.Black)
+		clickToCopyLbl := compo.NewLabel(pixel.V(300, 125), "Click to copy your address,", typing.Left, typing.Size39, colornames.Royalblue)
+
+		giveItLblShadow := compo.NewLabel(pixel.V(300+1, 75-1), "give it to your opponent:", typing.Left, typing.Size39, colornames.Black)
+		giveItLbl := compo.NewLabel(pixel.V(300, 75), "give it to your opponent:", typing.Left, typing.Size39, colornames.Royalblue)
+
+		addressLblShadow := compo.NewLabel(pixel.V(300+1, 25-1), "127.120.210.145:49152", typing.Left, typing.Size39, colornames.Black)
+		addressLbl := compo.NewLabel(pixel.V(300, 25), "127.120.210.145:49152", typing.Left, typing.Size39, colornames.Royalblue)
+		scene.components = append(scene.components, clickToCopyLblShadow, clickToCopyLbl, giveItLblShadow, giveItLbl, addressLblShadow, addressLbl)
+	} else {
+		go p2p.CreateClient("127.0.0.1:49152") //TODO hardcode!
+		input := compo.NewInput(pixel.V(300, 100), "Enter IP address")
+		input.RegexpPattern = `^[\d\.:]{1,21}$`
+		scene.components = append(scene.components, input)
 	}
 	return scene
 }
